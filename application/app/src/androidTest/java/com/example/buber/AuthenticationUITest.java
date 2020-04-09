@@ -1,16 +1,13 @@
 package com.example.buber;
 
 import android.app.Activity;
-import android.util.Log;
-import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 
-import com.example.buber.Views.Activities.CreateAccountActivity;
-import com.example.buber.Views.Activities.MainActivity;
-import com.example.buber.Views.Activities.MapActivity;
+import com.example.buber.views.activities.CreateAccountActivity;
+import com.example.buber.views.activities.MainActivity;
 import com.robotium.solo.Solo;
 
 import org.junit.After;

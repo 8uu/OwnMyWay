@@ -5,13 +5,12 @@ import android.content.Intent;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 
-import com.example.buber.Controllers.ApplicationController;
-import com.example.buber.Model.Driver;
-import com.example.buber.Model.User;
-import com.example.buber.Model.UserLocation;
-import com.example.buber.Views.Activities.LoginActivity;
-import com.example.buber.Views.Activities.MainActivity;
-import com.example.buber.Views.Activities.MapActivity;
+import com.example.buber.controllers.ApplicationController;
+import com.example.buber.model.Driver;
+import com.example.buber.model.User;
+import com.example.buber.model.UserLocation;
+import com.example.buber.views.activities.LoginActivity;
+import com.example.buber.views.activities.MapActivity;
 import com.robotium.solo.Solo;
 
 import org.junit.Before;

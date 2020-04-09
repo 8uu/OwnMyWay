@@ -13,9 +13,8 @@ import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
-import com.example.buber.Model.UserLocation;
-import com.example.buber.Views.Activities.MainActivity;
-import com.example.buber.Views.Activities.MapActivity;
+import com.example.buber.views.activities.MainActivity;
+import com.example.buber.views.activities.MapActivity;
 import com.robotium.solo.Solo;
 
 import org.junit.Before;

@@ -4,16 +4,15 @@ import android.app.Activity;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.example.buber.Controllers.ApplicationController;
-import com.example.buber.DB.AuthDBManager;
-import com.example.buber.DB.DBManager;
-import com.example.buber.Model.ApplicationModel;
+import com.example.buber.controllers.ApplicationController;
+import com.example.buber.db.AuthDBManager;
+import com.example.buber.db.DBManager;
+import com.example.buber.model.ApplicationModel;
 
 /**
  * Root class of our application. Extends the base Android.app.Application class.
@@ -110,7 +109,7 @@ public class App extends Application {
     }
 
 
-    public static String getAPIKey(Activity activity) {
+    public static String getAPIKey(Activity activity, boolean getDirections) {
         Bundle bundle = null;
         try {
             ApplicationInfo app = activity
@@ -124,9 +123,13 @@ public class App extends Application {
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
-        return bundle.getString("com.google.android.geo.API_KEY");
-    }
 
+        if (getDirections) {
+            return bundle.getString("directionsAPI");
+        } else {
+            return bundle.getString("com.google.android.geo.API_KEY");
+        }
+    }
 
     /**
      * Creates our notification channels

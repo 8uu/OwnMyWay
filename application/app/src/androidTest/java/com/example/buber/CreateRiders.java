@@ -4,13 +4,9 @@ import android.widget.EditText;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
-import androidx.test.uiautomator.UiDevice;
 
-import com.example.buber.Controllers.ApplicationController;
-import com.example.buber.Views.Activities.CreateAccountActivity;
-import com.example.buber.Views.Activities.LoginActivity;
-import com.example.buber.Views.Activities.MainActivity;
-import com.example.buber.Views.Activities.MapActivity;
+import com.example.buber.controllers.ApplicationController;
+import com.example.buber.views.activities.CreateAccountActivity;
 import com.robotium.solo.Solo;
 
 import org.junit.Before;

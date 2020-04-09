@@ -1,9 +1,9 @@
 package com.example.buber;
 
-import com.example.buber.Model.ApplicationModel;
-import com.example.buber.Model.Driver;
-import com.example.buber.Model.Trip;
-import com.example.buber.Model.UserLocation;
+import com.example.buber.model.ApplicationModel;
+import com.example.buber.model.Driver;
+import com.example.buber.model.Trip;
+import com.example.buber.model.UserLocation;
 
 import org.junit.Test;
 

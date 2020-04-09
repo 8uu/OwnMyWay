@@ -5,12 +5,12 @@ import android.widget.EditText;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 
-import com.example.buber.Controllers.EventCompletionListener;
-import com.example.buber.Model.Account;
-import com.example.buber.Model.Rider;
-import com.example.buber.Model.User;
-import com.example.buber.Views.Activities.MainActivity;
-import com.example.buber.Views.Activities.MapActivity;
+import com.example.buber.controllers.EventCompletionListener;
+import com.example.buber.model.Account;
+import com.example.buber.model.Rider;
+import com.example.buber.model.User;
+import com.example.buber.views.activities.MainActivity;
+import com.example.buber.views.activities.MapActivity;
 import com.robotium.solo.Solo;
 
 import org.junit.Before;
