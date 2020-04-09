@@ -1,9 +1,14 @@
 package com.example.buber;
 
+import android.app.Activity;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Bundle;
 
 import com.example.buber.Controllers.ApplicationController;
 import com.example.buber.DB.AuthDBManager;
@@ -102,6 +107,24 @@ public class App extends Application {
         }
 
         return dbManager;
+    }
+
+
+    public static String getAPIKey(Activity activity) {
+        Bundle bundle = null;
+        try {
+            ApplicationInfo app = activity
+                    .getPackageManager()
+                    .getApplicationInfo(
+                            BuildConfig.APPLICATION_ID,
+                            PackageManager.GET_META_DATA);
+            bundle = app.metaData;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        return bundle.getString("com.google.android.geo.API_KEY");
     }
 
 

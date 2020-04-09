@@ -62,7 +62,8 @@ public class TripSearchActivity extends AppCompatActivity implements UIErrorHand
                     new AcceptTripRequestFragment(tripDataList.get(position),
                             position,
                             TripSearchActivity.this,
-                            showAcceptedPendingRides)
+                            showAcceptedPendingRides,
+                            App.getAPIKey(this))
                             .show(getSupportFragmentManager(), "VIEW_RECORD"));
 
             if (showAcceptedPendingRides) {

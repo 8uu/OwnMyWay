@@ -439,10 +439,15 @@ public class MapActivity extends AppCompatActivity implements Observer, OnMapRea
             return;
         }
 
-        new GetPathFromLocation(startLoc, endLoc, polyLine -> {
-            routePointList = polyLine.getPoints();
-            mMap.addPolyline(polyLine);
-        }).execute();
+        new GetPathFromLocation(
+                startLoc,
+                endLoc,
+                App.getAPIKey(this),
+                polyLine -> {
+                    routePointList = polyLine.getPoints();
+                    mMap.addPolyline(polyLine);
+                }).execute();
+
         //Adds start and end point markers to map
         mMap.addMarker(new MarkerOptions().position(startLoc).title("Start Location"));
         mMap.addMarker(new MarkerOptions().position(endLoc).title("End Location"));

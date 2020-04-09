@@ -35,6 +35,8 @@ import java.util.List;
  * accept a trip.
  */
 public class AcceptTripRequestFragment extends DialogFragment {
+    private String apiKey;
+
     private TextView estimatedCost;
     private TextView startAdd;
     private TextView endAdd;
@@ -52,36 +54,46 @@ public class AcceptTripRequestFragment extends DialogFragment {
 
     /**
      * Constructor for AcceptTripRequestFragment
-     * @param tripSearchRecord,position the tripSearchRecord and its position in the tripSearch list*/
-    public AcceptTripRequestFragment(TripSearchRecord tripSearchRecord, int position, TripSearchActivity parentActivity, boolean showAcceptedPendingRides){
+     *
+     * @param tripSearchRecord,position the tripSearchRecord and its position in the tripSearch list
+     */
+    public AcceptTripRequestFragment(TripSearchRecord tripSearchRecord,
+                                     int position,
+                                     TripSearchActivity parentActivity,
+                                     boolean showAcceptedPendingRides,
+                                     String apiKey) {
         this.tripSearchRecord = tripSearchRecord;
         this.position = position;
         this.parentActivity = parentActivity;
         this.showAcceptedPendingRides = showAcceptedPendingRides;
+        this.apiKey = apiKey;
     }
 
     /**
      * OnAcceptPressed allows the driver to accept trips by pressing the accept button
-     * */
-    public interface OnFragmentInteractionListener{
+     */
+    public interface OnFragmentInteractionListener {
         void onAcceptPressed(TripSearchRecord tripSearchRecord, int position);
     }
 
-    /**onAttach handles the listener when the fragment is attached*/
+    /**
+     * onAttach handles the listener when the fragment is attached
+     */
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if(context instanceof OnFragmentInteractionListener){
+        if (context instanceof OnFragmentInteractionListener) {
             listener = (OnFragmentInteractionListener) context;
-        }else {
-            throw new RuntimeException(context.toString()+
+        } else {
+            throw new RuntimeException(context.toString() +
                     "must implement onFragmentInteractionListener");
         }
     }
+
     /**
      * OnCreateDialog is builds the TripRequest Fragment and fills the views with correct
      * information from database
-     * */
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -96,7 +108,7 @@ public class AcceptTripRequestFragment extends DialogFragment {
         viewContactButton = view.findViewById(R.id.viewContactButton);
 
         //If the trip search record exists add information to the fragment
-        if (tripSearchRecord != null){
+        if (tripSearchRecord != null) {
             estimatedCost.setText(tripSearchRecord.getEstimatedCost());
             startAdd.setText(tripSearchRecord.getStartAddress());
             endAdd.setText(tripSearchRecord.getEndAddress());
@@ -116,10 +128,14 @@ public class AcceptTripRequestFragment extends DialogFragment {
             mapView.getMapAsync(googleMap -> {
                 LatLng origin = tripSearchRecord.getStartLatLng();
                 LatLng destination = tripSearchRecord.getEndLatLng();
-                new GetPathFromLocation(origin, destination, polyLine -> {
-                    routePointList = polyLine.getPoints();
-                    googleMap.addPolyline(polyLine);
-                }).execute();
+                new GetPathFromLocation(
+                        origin,
+                        destination,
+                        apiKey,
+                        polyLine -> {
+                            routePointList = polyLine.getPoints();
+                            googleMap.addPolyline(polyLine);
+                        }).execute();
                 googleMap.addMarker(new MarkerOptions().position(origin).title("start"));
                 googleMap.addMarker(new MarkerOptions().position(destination).title("end"));
                 LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
@@ -127,7 +143,7 @@ public class AcceptTripRequestFragment extends DialogFragment {
                 boundsBuilder.include(destination);
                 int routePadding = 120;
                 LatLngBounds latLngBounds = boundsBuilder.build();
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds,routePadding));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, routePadding));
             });
 
         }
@@ -150,15 +166,20 @@ public class AcceptTripRequestFragment extends DialogFragment {
         }
     }
 
-    /**Handles the user clicking the View Contact Details button
-     * @param riderID is the riderID - it is used to pull the correct information*/
+    /**
+     * Handles the user clicking the View Contact Details button
+     *
+     * @param riderID is the riderID - it is used to pull the correct information
+     */
     public void handleViewRiderContact(String riderID) {
         Intent contactIntent = new Intent(parentActivity, ContactViewerActivity.class);
         App.getController().handleViewContactInformation(parentActivity, contactIntent, riderID, null);
     }
 
-    /**Destroys the map when the dialog fragment is closed. It prevents the app from
-     * crashing when new maps are drawn*/
+    /**
+     * Destroys the map when the dialog fragment is closed. It prevents the app from
+     * crashing when new maps are drawn
+     */
     @Override
     public void onDestroyView() {
         super.onDestroyView();

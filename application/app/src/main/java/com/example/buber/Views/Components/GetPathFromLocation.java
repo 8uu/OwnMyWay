@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.buber.App;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -27,9 +28,7 @@ import java.util.List;
 //Source Citation: https://stackoverflow.com/questions/47492459/how-do-i-draw-a-route-along-an-existing-road-between-two-points
 public class GetPathFromLocation extends AsyncTask<String, Void, PolylineOptions> {
     private String TAG = "GetPathFromLocation";
-    //Private String of APIKEY
-    private String APIKEY = "AIzaSyDFEIMmFpPoMijm_0YraJn4S33UvtlnqF8";
-
+    private String apiKey;
     private com.google.android.gms.maps.model.LatLng source, destination;
     private DirectionPointListener resultCallback;
 
@@ -39,10 +38,12 @@ public class GetPathFromLocation extends AsyncTask<String, Void, PolylineOptions
      * @param  resultCallback a DirectionPointListener used for the path call*/
     public GetPathFromLocation(LatLng source,
                                LatLng destination,
+                               String apiKey,
                                DirectionPointListener resultCallback){
         this.source = source;
         this.destination = destination;
         this.resultCallback = resultCallback;
+        this.apiKey = apiKey;
     }
 
     /**GetURL() returns a URL string for use in the API call
@@ -56,7 +57,7 @@ public class GetPathFromLocation extends AsyncTask<String, Void, PolylineOptions
         String sensor = "sensor=false";
         String parameters = str_origin + "&" + str_dest + "&" + sensor;
         String output = "json";
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + APIKEY;
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + apiKey;
 
         return url;
     }

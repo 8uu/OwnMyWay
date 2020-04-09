@@ -1,6 +1,8 @@
 package com.example.buber.Views.Activities;
 
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -56,7 +58,7 @@ public class TripBuilderActivity extends AppCompatActivity implements UIErrorHan
     public CircularProgressButton submitTripBtn;
 
     // AutoComplete Places API
-    String apiKey = "AIzaSyDFEIMmFpPoMijm_0YraJn4S33UvtlnqF8";
+    String apiKey;
     int REQUEST_PLACE_PICKER = 1;
 
     /**onCreate method will create TripBuilderActivity when it is run
@@ -66,7 +68,7 @@ public class TripBuilderActivity extends AppCompatActivity implements UIErrorHan
         super.onCreate(savedInstanceState);
         setContentView(R.layout.trip_builder_layout);
         App.getModel().addObserver(this);
-
+        apiKey = App.getAPIKey(this);
 
         // Set start location parameters from previous map activity
         double[] currentLatLong = getIntent().getDoubleArrayExtra("currentLatLong");

@@ -18,39 +18,43 @@
         android:roundIcon="@mipmap/buber_logo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
-        <activity android:name=".Views.Activities.RatingActivity"></activity>
-        <activity android:name=".Views.Activities.PaymentActivity" />
-        <activity android:name=".Views.Activities.ContactViewerActivity"></activity>
-        <activity android:name=".Views.Activities.RequestStatusActivity" />
+
+        <!--    COMMON ACTIVITIES    -->
+        <activity android:name=".Views.Activities.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".Views.Activities.LoginActivity" />
+        <activity android:name=".Views.Activities.CreateAccountActivity" />
+        <activity android:name=".Views.Activities.MapActivity" />
         <activity android:name=".Views.Activities.EditAccountActivity" />
+        <activity android:name=".Views.Activities.ContactViewerActivity"/>
+        <activity android:name=".Views.Activities.RequestStatusActivity" />
+
+        <!--   DRIVER ACTIVITIES     -->
+        <activity android:name=".Views.Activities.TripSearchActivity" />
+        <activity android:name=".Views.Activities.PaymentActivity" />
+
+        <!--    RIDER ACTIVITIES    -->
+        <activity android:name=".Views.Activities.TripBuilderActivity" />
+        <activity android:name=".Views.Activities.RatingActivity"/>
 
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
         <!--
-     The API key for Google Maps-based APIs is defined as a string resource.
-     (See the file "res/values/google_maps_api.xml").
-     Note that the API key is linked to the encryption key used to sign the APK.
-     You need a different API key for each encryption key, including the release key that is used to
-     sign the APK for publishing.
-     You can define the keys for the debug and release targets in src/debug/ and src/release/.
+         The API key for Google Maps-based APIs is defined as a string resource.
+         (See the file "res/values/google_maps_api.xml").
+         Note that the API key is linked to the encryption key used to sign the APK.
+         You need a different API key for each encryption key, including the release key that is used to
+         sign the APK for publishing.
+         You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDFEIMmFpPoMijm_0YraJn4S33UvtlnqF8" />
-
-        <activity android:name=".Views.Activities.TripBuilderActivity" />
-        <activity android:name=".Views.Activities.MapActivity" />
-        <activity android:name=".Views.Activities.CreateAccountActivity" />
-        <activity android:name=".Views.Activities.LoginActivity" />
-        <activity android:name=".Views.Activities.TripSearchActivity" />
-        <activity android:name=".Views.Activities.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:value="AIzaSyDE-fVJg6b8Cvp-eTYklZtjIi5HXE3-FDY" />
     </application>
 
 </manifest>

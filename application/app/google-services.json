@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "332986898324",
-    "firebase_url": "https://buber-db.firebaseio.com",
-    "project_id": "buber-db",
-    "storage_bucket": "buber-db.appspot.com"
+    "project_number": "914813536355",
+    "firebase_url": "https://buber-273618.firebaseio.com",
+    "project_id": "buber-273618",
+    "storage_bucket": "buber-273618.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:332986898324:android:303db351b6e9d6123ba181",
+        "mobilesdk_app_id": "1:914813536355:android:d1497d54e7646d009b1056",
         "android_client_info": {
           "package_name": "com.example.buber"
         }
       },
       "oauth_client": [
         {
-          "client_id": "332986898324-a7rgbed0v5domvkn8a3rn21c6hvbtetc.apps.googleusercontent.com",
+          "client_id": "914813536355-cojro8oeecv1369kt42mdiarlk9kpc5d.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB_5EyZzKt22bFS-qmyl0gxk3hAlWb0sS4"
+          "current_key": "AIzaSyDE-fVJg6b8Cvp-eTYklZtjIi5HXE3-FDY"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "332986898324-a7rgbed0v5domvkn8a3rn21c6hvbtetc.apps.googleusercontent.com",
+              "client_id": "914813536355-cojro8oeecv1369kt42mdiarlk9kpc5d.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
