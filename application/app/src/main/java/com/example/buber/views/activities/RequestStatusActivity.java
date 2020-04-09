@@ -2,6 +2,7 @@ package com.example.buber.views.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,7 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.buber.App;
-import com.example.buber.model.Account;
+import com.example.buber.controllers.ApplicationController;
 import com.example.buber.model.ApplicationModel;
 import com.example.buber.model.Driver;
 import com.example.buber.model.Trip;
@@ -18,19 +19,15 @@ import com.example.buber.model.User;
 import com.example.buber.R;
 import com.example.buber.views.UIErrorHandler;
 
+import java.util.Objects;
 import java.util.Observable;
 import java.util.Observer;
 
 import static com.example.buber.model.User.TYPE.RIDER;
 
-/**
- * Note: If You need too, call ApplicationController.getRiderCurrentTrip(this)
- */
-
- /** ReequestStatusActivity is used to show status of trip requests, as well as driver's info
+/** RequestStatusActivity is used to show status of trip requests, as well as driver's info
  */
 public class RequestStatusActivity extends AppCompatActivity implements Observer, UIErrorHandler {
-    private final String TAG = "RequestStatusActivity";
     private TextView statusTextView;
     private TextView startTextView;
     private TextView endTextView;
@@ -60,18 +57,18 @@ public class RequestStatusActivity extends AppCompatActivity implements Observer
     }
 
     /**Gets drivers info to be displayed*/
+    @SuppressLint("SetTextI18n")
     public void getDriverInfo(String docID){
         App.getDbManager().getDriver(docID, (resultData, err) -> {
             if (resultData != null) {
 
                 //this fetched driver is from the db
                 Driver tmpDriver = (Driver) resultData.get("user");
-                Account tmpAccount = tmpDriver.getAccount();
-                usernameTextView.setText(tmpDriver.getUsername());
+                usernameTextView.setText(Objects.requireNonNull(tmpDriver).getUsername());
                 driverRatingTextView.setText("Current Rating: " + tmpDriver.getRating() + " / 100.0");
             }
             else {
-                Toast.makeText(this, err.getMessage(), Toast.LENGTH_LONG);
+                Toast.makeText(this, err.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -88,7 +85,7 @@ public class RequestStatusActivity extends AppCompatActivity implements Observer
         }
 
         if(curUser.getType()==RIDER){  //rider opening the view
-            statusTextView.setText(trip.getStatus().toString());
+            statusTextView.setText(Objects.requireNonNull(trip).getStatus().toString());
             startTextView.setText(trip.getStartUserLocation().getAddress());
             endTextView.setText(trip.getEndUserLocation().getAddress());
             if(trip.getDriverID() != null){
@@ -102,7 +99,7 @@ public class RequestStatusActivity extends AppCompatActivity implements Observer
                 usernameTextView.setVisibility(View.INVISIBLE);
             }
         } else {  //driver opening the view
-            statusTextView.setText(trip.getStatus().toString());
+            statusTextView.setText(Objects.requireNonNull(trip).getStatus().toString());
             startTextView.setText(trip.getStartUserLocation().getAddress());
             endTextView.setText(trip.getEndUserLocation().getAddress());
             usernameTextTextView.setVisibility(View.INVISIBLE);
@@ -121,7 +118,7 @@ public class RequestStatusActivity extends AppCompatActivity implements Observer
         Trip trip = App.getModel().getSessionTrip();
         if (trip != null && trip.getDriverID() != null) {
             Intent contactIntent = new Intent(this, ContactViewerActivity.class);
-            App.getController().handleViewContactInformation(this, contactIntent, trip.getRiderID(), trip.getDriverID());
+            ApplicationController.handleViewContactInformation(this, contactIntent, trip.getRiderID(), trip.getDriverID());
         }
     }
 

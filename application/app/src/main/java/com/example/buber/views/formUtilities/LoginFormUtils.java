@@ -9,19 +9,16 @@ import java.util.regex.Pattern;
  * Validation utility functions for login form.
  */
 public class LoginFormUtils {
-
-
-    public static final String FirebaseAuthEmailExceptionMSG = "There is no user record corresponding to this identifier. The user may have been deleted.";
-    public static final String FirebaseAuthPassWordExceptionCode = "ERROR_WRONG_PASSWORD";
-
-    /**Function is used to validate lofin info. It checks to ensure that email and password
+    /**
+     * Function is used to validate lofin info. It checks to ensure that email and password
      * entries are correct and non-empty
-     * @param editEmail,ediitpassword are the email and password EditText view containing user information*/
+     *
+     * @param editEmail,ediitpassword are the email and password EditText view containing user information
+     */
     public static boolean validateForm(EditText editEmail, EditText editPassword) {
 
         String email = editEmail.getText().toString().trim();
         String password = editPassword.getText().toString().trim();
-
 
         // Referece: https://howtodoinjava.com/regex/java-regex-validate-email-address/
         // Firebase enforces strict email formatting
@@ -54,5 +51,4 @@ public class LoginFormUtils {
 
         return true;
     }
-
 }

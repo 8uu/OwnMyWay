@@ -24,7 +24,6 @@ import br.com.simplepass.loadingbutton.customViews.CircularProgressButton;
  * Login Activity, handles all existing user authentication
  */
 public class LoginActivity extends AppCompatActivity implements Observer, UIErrorHandler {
-    private String TAG = "LoginActivity";
     private EditText editEmail;
     private EditText editPassword;
     private CircularProgressButton driverLoginBtn;

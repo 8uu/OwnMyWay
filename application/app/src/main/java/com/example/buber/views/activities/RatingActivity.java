@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.buber.App;
@@ -16,15 +15,11 @@ import java.util.Observable;
 import java.util.Observer;
 
 public class RatingActivity extends AppCompatActivity implements Observer {
-    private Button btnThumbsUp;
-    private Button btnThumbsDown;
-    private Button btnSkip;
     private String driverID;
 
     /**
      * Renders a view with 3 buttons. One to rate thumbs up, one to rate thumbs down, and one
      * to skip.
-     * @param savedInstanceState
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,9 +28,6 @@ public class RatingActivity extends AppCompatActivity implements Observer {
 
         App.getModel().addObserver(this);
         driverID =  getIntent().getStringExtra("driverID");
-        btnThumbsUp = this.findViewById(R.id.buttonThumbsUp);
-        btnThumbsDown = this.findViewById(R.id.buttonThumbsDown);
-        btnSkip = this.findViewById(R.id.buttonSkip);
     }
 
     /**

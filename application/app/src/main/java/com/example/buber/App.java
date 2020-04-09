@@ -51,15 +51,15 @@ public class App extends Application {
     @Override
     public void onTerminate() {
         super.onTerminate();
-        model = null;
-        controller = null;
-        dbManager = null;
-        authDBManager = null;
-
         // Remove any triplisteners the app may have
         if (model.getTripListener() != null) {
             model.getTripListener().remove();
         }
+
+        model = null;
+        controller = null;
+        dbManager = null;
+        authDBManager = null;
     }
     /**/
 
@@ -120,14 +120,16 @@ public class App extends Application {
             bundle = app.metaData;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
-        } catch (NullPointerException e) {
-            e.printStackTrace();
         }
 
-        if (getDirections) {
-            return bundle.getString("directionsAPI");
+        if (bundle != null) {
+            if (getDirections) {
+                return bundle.getString("directionsAPI");
+            } else {
+                return bundle.getString("com.google.android.geo.API_KEY");
+            }
         } else {
-            return bundle.getString("com.google.android.geo.API_KEY");
+            return "";
         }
     }
 
@@ -152,8 +154,10 @@ public class App extends Application {
             riderChannel.setDescription("This is the rider channel.");
 
             NotificationManager manager = getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(driverChannel);
-            manager.createNotificationChannel(riderChannel);
+            if (manager != null) {
+                manager.createNotificationChannel(driverChannel);
+                manager.createNotificationChannel(riderChannel);
+            }
         }
     }
 }

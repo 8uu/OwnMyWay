@@ -16,6 +16,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.buber.App;
+import com.example.buber.controllers.ApplicationController;
 import com.example.buber.model.ApplicationModel;
 import com.example.buber.model.Trip;
 import com.example.buber.model.User;
@@ -52,7 +53,6 @@ import static com.example.buber.model.User.TYPE.RIDER;
  * on the type of user currently logged in (Rider, Driver). Activity links into the Google Maps
  * APi which is used to handle the current user location. Future iterations will include using
  * The sessionTrip object to display the route on the map and enable selecting start / end locations
- * TODO: MVC Updating and Error Handling.
  */
 public class MapActivity extends AppCompatActivity implements Observer, OnMapReadyCallback, UIErrorHandler {
 
@@ -63,10 +63,6 @@ public class MapActivity extends AppCompatActivity implements Observer, OnMapRea
     private boolean mLocationPermissionGranted = false;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1234;
     private static final float DEFAULT_ZOOM = 15;
-    private LocationListener locationListener;
-    private LocationManager locationManager;
-    private final long MIN_MAP_UPDATE_INTERVAL = 1000; // update map on a 1 second delta
-    private final long MIN_MAP_UPDATE_DISTANCE = 5; // update map on a 5 meters delta (battery life conservation)
     public final double GEOFENCE_DETECTION_TOLERANCE = 0.040; // 40 meters is the average house perimeter width in North America
 
     // LOCAL TRIP STATE
@@ -222,7 +218,7 @@ public class MapActivity extends AppCompatActivity implements Observer, OnMapRea
                         mLastKnownUserLocation.getLongitude());
                 if (startUserLocation.distanceTo(driverLoc) <= GEOFENCE_DETECTION_TOLERANCE) {
                     Toast.makeText(getBaseContext(), "Notifying rider you have arrived...", Toast.LENGTH_LONG).show();
-                    App.getController().handleNotifyRiderForPickup();
+                    ApplicationController.handleNotifyRiderForPickup();
                 }
             }
 
@@ -232,7 +228,7 @@ public class MapActivity extends AppCompatActivity implements Observer, OnMapRea
                         mLastKnownUserLocation.getLongitude());
                 Log.d("", "" + riderLoc.distanceTo(endUserLocation));
                 if (riderLoc.distanceTo(endUserLocation) <= GEOFENCE_DETECTION_TOLERANCE) {
-                    App.getController().completeTrip();
+                    ApplicationController.completeTrip();
                 }
             }
 
@@ -259,22 +255,30 @@ public class MapActivity extends AppCompatActivity implements Observer, OnMapRea
             }
         });
 
-        locationListener = new LocationListener() {
+        LocationListener locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
                 updateOnLocationChange();
             }
 
             @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {}
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+            }
+
             @Override
-            public void onProviderEnabled(String provider) {}
+            public void onProviderEnabled(String provider) {
+            }
+
             @Override
-            public void onProviderDisabled(String provider) {}
+            public void onProviderDisabled(String provider) {
+            }
         };
 
         try {
-            locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            long MIN_MAP_UPDATE_INTERVAL = 1000; // update map on a 1 second delta
+            long MIN_MAP_UPDATE_DISTANCE = 5; // update map on a 5 meters delta (battery life conservation)
+            assert locationManager != null;
             locationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
                     MIN_MAP_UPDATE_INTERVAL,
@@ -288,6 +292,7 @@ public class MapActivity extends AppCompatActivity implements Observer, OnMapRea
     /***** BUILDING CUSTOM GOOGLE MAP (CODE REFERENCED FROM GOOGLE API DOCS) ******/
     public void initializeMap() {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        assert mapFragment != null;
         mapFragment.getMapAsync(MapActivity.this);  //calls onMapReady
     }
 
@@ -326,7 +331,6 @@ public class MapActivity extends AppCompatActivity implements Observer, OnMapRea
                     if (task.isSuccessful()) {
                         // Set the map's camera position to the current location of the device.
                         mLastKnownUserLocation = (Location) task.getResult();
-                        //TODO::fix controller lat and long
 
                         if (updateFirebase) {
                             App.getController().updateUserLocation(new UserLocation(
@@ -335,10 +339,9 @@ public class MapActivity extends AppCompatActivity implements Observer, OnMapRea
                         }
 
                         Trip sessionTrip = App.getModel().getSessionTrip();
-
                         if (attemptRouteRedraw &&
                             sessionTrip != null && sessionTrip.getStatus() == EN_ROUTE) {
-                            //assigns start location depending on whether trip is ENROUTE or onRoute
+                            //assigns start location depending on whether trip is EN ROUTE or onRoute
                             LatLng startLoc;
                             LatLng endLoc = sessionTrip.getEndUserLocation().generateLatLng();
                             if(isTripOnRoute()){
@@ -400,17 +403,14 @@ public class MapActivity extends AppCompatActivity implements Observer, OnMapRea
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         //this code is copied from google map api documentation
         mLocationPermissionGranted = false;
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    mLocationPermissionGranted = true;
-                    initializeMap();
-                    Log.d("LOCATIONPERMISSION", "UserLocation permission granted");
-                } else {
-                    Log.d("LOCATIONPERMISSION", "UserLocation permission denied");
-                }
+        if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {// If request is cancelled, the result arrays are empty.
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                mLocationPermissionGranted = true;
+                initializeMap();
+                Log.d("LOCATION PERMISSION", "UserLocation permission granted");
+            } else {
+                Log.d("LOCATION PERMISSION", "UserLocation permission denied");
             }
         }
     }
@@ -426,9 +426,7 @@ public class MapActivity extends AppCompatActivity implements Observer, OnMapRea
 
     /** onError handles UI Errors if there are any **/
     @Override
-    public void onError(Error e) {
-        // TODO: Handle UI Errors
-    }
+    public void onError(Error e) {}
 
     /**Draws start/end route polylines on map when requested - also adds markers to start/end location*/
     public void drawRouteMap(LatLng startLoc, LatLng endLoc){

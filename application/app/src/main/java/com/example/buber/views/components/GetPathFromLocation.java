@@ -17,6 +17,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * GetPathFromLocation class makes an api call to DirectionsAPI. It creates a URL using the start
@@ -26,7 +27,6 @@ import java.util.List;
  * to create a driving route on the map*/
 //Source Citation: https://stackoverflow.com/questions/47492459/how-do-i-draw-a-route-along-an-existing-road-between-two-points
 public class GetPathFromLocation extends AsyncTask<String, Void, PolylineOptions> {
-    private String TAG = "GetPathFromLocation";
     private String apiKey;
     private com.google.android.gms.maps.model.LatLng source, destination;
     private DirectionPointListener resultCallback;
@@ -48,7 +48,7 @@ public class GetPathFromLocation extends AsyncTask<String, Void, PolylineOptions
     /**GetURL() returns a URL string for use in the API call
      * @param  origin a LatLng variable of the StartLocation
      * @param  destination a LatLng variable of the EndLocation*/
-    public String getUrl(LatLng origin, LatLng destination){
+    private String getUrl(LatLng origin, LatLng destination){
 
         String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
         String str_dest = "destination=" + destination.latitude + "," + destination.longitude;
@@ -56,9 +56,7 @@ public class GetPathFromLocation extends AsyncTask<String, Void, PolylineOptions
         String sensor = "sensor=false";
         String parameters = str_origin + "&" + str_dest + "&" + sensor;
         String output = "json";
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + apiKey;
-
-        return url;
+        return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + apiKey;
     }
 
     /**doInBackground
@@ -67,6 +65,7 @@ public class GetPathFromLocation extends AsyncTask<String, Void, PolylineOptions
     protected PolylineOptions doInBackground(String... url) {
         String data;
 
+        String TAG = "GetPathFromLocation";
         try {
             InputStream inputStream = null;
             HttpURLConnection connection = null;
@@ -77,9 +76,9 @@ public class GetPathFromLocation extends AsyncTask<String, Void, PolylineOptions
                 inputStream = connection.getInputStream();
 
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-                StringBuffer stringBuffer = new StringBuffer();
+                StringBuilder stringBuffer = new StringBuilder();
 
-                String line = "";
+                String line;
                 while ((line = bufferedReader.readLine()) != null) {
                     stringBuffer.append(line);
                 }
@@ -91,6 +90,7 @@ public class GetPathFromLocation extends AsyncTask<String, Void, PolylineOptions
                 Log.e(TAG, "Exception : " + e.toString());
                 return null;
             } finally {
+                assert inputStream != null;
                 inputStream.close();
                 connection.disconnect();
             }
@@ -98,7 +98,7 @@ public class GetPathFromLocation extends AsyncTask<String, Void, PolylineOptions
 
 
             JSONObject jsonObject;
-            List<List<HashMap<String, String>>> routes = null;
+            List<List<HashMap<String, String>>> routes;
 
             try {
                 jsonObject = new JSONObject(data);
@@ -123,8 +123,8 @@ public class GetPathFromLocation extends AsyncTask<String, Void, PolylineOptions
                     for (int j = 0; j < path.size(); j++) {
                         HashMap<String, String> point = path.get(j);
 
-                        double lat = Double.parseDouble(point.get("lat"));
-                        double lng = Double.parseDouble(point.get("lng"));
+                        double lat = Double.parseDouble(Objects.requireNonNull(point.get("lat")));
+                        double lng = Double.parseDouble(Objects.requireNonNull(point.get("lng")));
                         LatLng position = new LatLng(lat, lng);
 
                         points.add(position);
@@ -139,11 +139,7 @@ public class GetPathFromLocation extends AsyncTask<String, Void, PolylineOptions
                 }
 
                 // Drawing polyline in the Google Map for the i-th route
-                if (lineOptions != null) {
-                    return lineOptions;
-                } else {
-                    return null;
-                }
+                return lineOptions;
 
             } catch (Exception e) {
                 Log.e(TAG, "Exception in Executing Routes : " + e.toString());

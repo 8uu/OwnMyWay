@@ -2,8 +2,6 @@ package com.example.buber.views.components;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -92,13 +90,10 @@ public class BUberMapUIAddOnsManager {
         setMapButtonOnClickListeners();
     }
 
-    /** Sets up OnClick listeners for ALL buttons on the MapActivity **/
+    /**
+     * Sets up OnClick listeners for ALL buttons on the MapActivity
+     **/
     private void setMapButtonOnClickListeners() {
-        /**
-         * handleRiderRequestBtn handles user interaction with the rider request button
-         *
-         * @param v is an instance of the view
-         */
         riderRequestMainBtn.setOnClickListener((View v) -> {
             Intent intent = new Intent(map, TripBuilderActivity.class);
             intent.putExtra(
@@ -111,7 +106,6 @@ public class BUberMapUIAddOnsManager {
             map.startActivity(intent);
         });
 
-        /** Handles user interaction with rider cancel button **/
         riderRequestCancelMainBtn.setOnClickListener((View v) -> {
             DialogInterface.OnClickListener dialogClickListener = ((DialogInterface dialog, int choice) -> {
                 switch (choice) {
@@ -130,28 +124,15 @@ public class BUberMapUIAddOnsManager {
                     .setNegativeButton("No", dialogClickListener).show();
         });
 
-        /** Handles user interaction with rider cancel pickup button **/
         riderCancelPickupBtn.setOnClickListener((View v) -> {
             Toast.makeText(map, "Cancelling trip...", Toast.LENGTH_SHORT).show();
             ApplicationController.deleteRiderCurrentTrip(map);
         });
 
 
-        /**
-         * Handles interaction with driver show requests button
-         *
-         * @param v is the view instance
-         */
-        driverShowRequestsMainBtn.setOnClickListener((View v) -> {
-            map.startActivity(new Intent(map, TripSearchActivity.class));
-        });
+        driverShowRequestsMainBtn.setOnClickListener((View v) -> map.startActivity(new Intent(map, TripSearchActivity.class)));
 
 
-        /**
-         * Handles interaction with driverShowAcceptedPendingRequestsBtn button
-         *
-         * @param v is the view instance
-         */
         driverShowAcceptedPendingRequestsBtn.setOnClickListener((View v) -> {
             Intent intent = new Intent(map, TripSearchActivity.class);
             intent.putExtra("ShowAcceptedPendingRidesFlag", true);
@@ -159,11 +140,6 @@ public class BUberMapUIAddOnsManager {
         });
 
 
-        /**
-         * Handles ride-in-progress
-         *
-         * @param v is the view instance
-         */
         cancelRideInProgress.setOnClickListener((View v) -> {
             if (map.currentTripStatus != Trip.STATUS.EN_ROUTE) {
                 return;
@@ -187,27 +163,18 @@ public class BUberMapUIAddOnsManager {
         });
 
 
-        /**
-         * Starts rider's payment activity
-         * @param v is the view instance
-         */
         riderQRPaymentBtn.setOnClickListener((View v) -> {
-             Intent paymentIntent = new Intent(map, PaymentActivity.class);
-             map.startActivity(paymentIntent);
+            Intent paymentIntent = new Intent(map, PaymentActivity.class);
+            map.startActivity(paymentIntent);
         });
 
 
-        /**
-         * Starts driver's payment QR buck scanning activity
-         * @param v is the view instance
-         */
         driverQRPaymentAcceptBtn.setOnClickListener((View v) -> {
-             Intent paymentIntent = new Intent(map, PaymentActivity.class);
-             map.startActivity(paymentIntent);
+            Intent paymentIntent = new Intent(map, PaymentActivity.class);
+            map.startActivity(paymentIntent);
         });
 
 
-        /** Shows settings sidebar panel when necessary **/
         settingsButton.setOnClickListener((View v) -> {
             sideBarView.setVisibility(View.VISIBLE);
             settingsButton.setVisibility(View.INVISIBLE);
@@ -217,34 +184,26 @@ public class BUberMapUIAddOnsManager {
         });
 
 
-        /**
-         * Handles click on test
-         *
-         * @param v is the view instance
-         */
-        statusButton.setOnClickListener((View v) -> {
-            map.startActivity(new Intent(map, RequestStatusActivity.class));
-        });
+        statusButton.setOnClickListener((View v) -> map.startActivity(new Intent(map, RequestStatusActivity.class)));
 
 
-        /** Changes activity to EditAccountActivity when Account button is clicked **/
         accountButton.setOnClickListener((View v) -> {
             map.startActivity(new Intent(map, EditAccountActivity.class));
             hideSettingsPanel();
         });
 
 
-        /** Logs user out of app when log out button is clicked **/
         logoutButton.setOnClickListener((View v) -> {
             User curUser = App.getModel().getSessionUser();
-            Log.d("APPSERVICE", "map logging out");
-            App.getController().manageLoggedStateAcrossTwoUserCollections(false, curUser, curUser.getType(), map);
+            ApplicationController.manageLoggedStateAcrossTwoUserCollections(false, curUser, curUser.getType(), map);
             map.startActivity(new Intent(map, LoginActivity.class));
             map.finish();
         });
     }
 
-    /** Shows active main action button when necessary **/
+    /**
+     * Shows active main action button when necessary
+     **/
     public void showActiveMainActionButton() {
         hideMainActionButtons();
         User.TYPE currentUserType = App.getModel().getSessionUser().getType();
@@ -309,18 +268,20 @@ public class BUberMapUIAddOnsManager {
         }
     }
 
-    /** Handles user interaction with rider accept button **/
-    public void handleRiderOfferAccept(String driverID) {
+    /**
+     * Handles user interaction with rider accept button
+     **/
+    private void handleRiderOfferAccept(String driverID) {
         if (map.currentTripStatus != Trip.STATUS.DRIVER_ACCEPT) {
             return;
         }
 
-        View view = LayoutInflater.from(map).inflate(R.layout.accept_trip_offer_fragment, null);
+        View view = View.inflate(map, R.layout.accept_trip_offer_fragment, null);
         Button viewContactButton = view.findViewById(R.id.viewContactButton);
         viewContactButton.setOnClickListener(v -> {
             String riderID = App.getModel().getSessionTrip().getRiderID();
             Intent contactIntent = new Intent(map, ContactViewerActivity.class);
-            App.getController().handleViewContactInformation(map, contactIntent, riderID, driverID);
+            ApplicationController.handleViewContactInformation(map, contactIntent, riderID, driverID);
         });
 
         // can't modify local vars in Java, so a thread-safe AtomicBoolean wrapper is used
@@ -346,23 +307,22 @@ public class BUberMapUIAddOnsManager {
                 .setView(view);
 
         // This builder MUST persist because the USER has to be sure they are on their way!
-        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                if (view.getParent() != null) {
-                    ((ViewGroup) view.getParent()).removeView(view);
-                }
-                if (!userHasConfirmed.get()) {
-                    builder.show();
-                }
+        builder.setOnDismissListener(dialog -> {
+            if (view.getParent() != null) {
+                ((ViewGroup) view.getParent()).removeView(view);
+            }
+            if (!userHasConfirmed.get()) {
+                builder.show();
             }
         });
 
         builder.show();
     }
 
-    /** Handles user interaction with rider accept button **/
-    public void ensureRiderHasBoardedRide() {
+    /**
+     * Handles user interaction with rider accept button
+     **/
+    private void ensureRiderHasBoardedRide() {
         if (map.currentTripStatus != Trip.STATUS.DRIVER_ARRIVED) {
             return;
         }
@@ -389,12 +349,9 @@ public class BUberMapUIAddOnsManager {
                 .setNegativeButton("No, I am cancelling", dialogClickListener).create();
 
         // This builder MUST persist because the USER has to be sure they are on their way!
-        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                if (!userHasConfirmed.get()) {
-                    builder.show();
-                }
+        builder.setOnDismissListener(dialog -> {
+            if (!userHasConfirmed.get()) {
+                builder.show();
             }
         });
 
@@ -405,7 +362,7 @@ public class BUberMapUIAddOnsManager {
     /**
      * Hides main action buttons when necessary
      */
-    public void hideMainActionButtons() {
+    private void hideMainActionButtons() {
         riderRequestMainBtn.setVisibility(View.GONE);
         riderRequestCancelMainBtn.setVisibility(View.GONE);
         riderCancelPickupBtn.setVisibility(View.GONE);
@@ -433,7 +390,7 @@ public class BUberMapUIAddOnsManager {
         statusButton.setVisibility(View.VISIBLE);
     }
 
-    public void hideStatusButton() {
+    private void hideStatusButton() {
         statusButton.setVisibility(View.GONE);
     }
 
@@ -441,7 +398,7 @@ public class BUberMapUIAddOnsManager {
         return showSideBar;
     }
 
-    public void setShowSideBar(boolean showSideBar) {
+    private void setShowSideBar(boolean showSideBar) {
         this.showSideBar = showSideBar;
     }
 }

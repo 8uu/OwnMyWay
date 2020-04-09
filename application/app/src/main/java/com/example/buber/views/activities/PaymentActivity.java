@@ -31,12 +31,7 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class PaymentActivity extends AppCompatActivity implements Observer, ZXingScannerView.ResultHandler, UIErrorHandler {
 
-    private String TAG = "GenerateQRCode Failed";
-    private ImageView qrImage;
     private String qrData;
-    //private String savePath;
-    private Bitmap bitmap;
-    private QRGEncoder qrEncoder;
     private ZXingScannerView mScannerView;
     private String driverID;  //stored locally before trip is deleted from db
     private static final int PERMISSIONS_REQUEST_ACCESS_CAMERA = 1233;
@@ -44,8 +39,6 @@ public class PaymentActivity extends AppCompatActivity implements Observer, ZXin
     /**
      * If we are a rider, generate the qr code and render a view to show that code
      * If we are a driver, open a scanner view(camera) to scan for a qr code
-     *
-     * @param savedInstanceState
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +48,9 @@ public class PaymentActivity extends AppCompatActivity implements Observer, ZXin
         App.getModel().addObserver(this);
         driverID = App.getModel().getSessionTrip().getDriverID();  //do this before driver deletes trip
         mScannerView = new ZXingScannerView(this);  //do not move this line
-        if(App.getModel().getSessionUser().getType() == User.TYPE.RIDER){
+        if (App.getModel().getSessionUser().getType() == User.TYPE.RIDER) {
             generateQRCode();
-        }
-        else if(App.getModel().getSessionUser().getType() == User.TYPE.DRIVER){
+        } else if (App.getModel().getSessionUser().getType() == User.TYPE.DRIVER) {
             getCameraPermission();
             scanQRCode();
         }
@@ -67,17 +59,13 @@ public class PaymentActivity extends AppCompatActivity implements Observer, ZXin
 
     /**
      * If camera is not enabled for the app. ask user for camera permissions
-     *
      */
     private void getCameraPermission() {
-
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 android.Manifest.permission.CAMERA)
-                == PackageManager.PERMISSION_GRANTED) {
-
-        } else {
+                != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.CAMERA},PERMISSIONS_REQUEST_ACCESS_CAMERA );
+                    new String[]{android.Manifest.permission.CAMERA}, PERMISSIONS_REQUEST_ACCESS_CAMERA);
         }
     }
 
@@ -95,15 +83,16 @@ public class PaymentActivity extends AppCompatActivity implements Observer, ZXin
         qrData = currentTrip.getRiderID();
         qrData = qrData + "," + currentTrip.getDriverID();
         qrData = qrData + "," + currentTrip.getFareOffering();
-        qrImage = this.findViewById(R.id.imageViewQRCode);
+        ImageView qrImage = this.findViewById(R.id.imageViewQRCode);
         int smallerDimension = 200;  //check this later
-        qrEncoder = new QRGEncoder(qrData, null, QRGContents.Type.TEXT, smallerDimension);
+        QRGEncoder qrEncoder = new QRGEncoder(qrData, null, QRGContents.Type.TEXT, smallerDimension);
 
         //turn the bitmap into a qr image
         try {
-            bitmap = qrEncoder.encodeAsBitmap();
+            Bitmap bitmap = qrEncoder.encodeAsBitmap();
             qrImage.setImageBitmap(bitmap);
         } catch (WriterException e) {
+            String TAG = "GenerateQRCode Failed";
             Log.v(TAG, e.toString());
         }
 
@@ -116,7 +105,7 @@ public class PaymentActivity extends AppCompatActivity implements Observer, ZXin
      * on the users camera and waits for a QR Code to be detected.
      * After Qr Code is detected, run handleResult(Result result)
      */
-    public void scanQRCode(){
+    public void scanQRCode() {
         // Set the scanner view as the content view
         setContentView(mScannerView);
     }
@@ -140,13 +129,14 @@ public class PaymentActivity extends AppCompatActivity implements Observer, ZXin
      * Once a qr code is detected from the camera, grab the data,
      * and receive the money. Drip then deletes from db, and the rider calls update()
      * String[] strData = [riderID, driverId, fairAmount]
+     *
      * @param result is the resulting bytes grabbed from the QR Code
      */
     @Override
     public void handleResult(Result result) {
         qrData = result.getText();
         String[] strData = qrData.split(",");
-        Toast.makeText(this, "You have received " + strData[2] + " QR Bucks" ,
+        Toast.makeText(this, "You have received " + strData[2] + " QR Bucks",
                 Toast.LENGTH_SHORT).show();
         ApplicationController.deleteRiderCurrentTrip(this);
         finish();
@@ -155,20 +145,17 @@ public class PaymentActivity extends AppCompatActivity implements Observer, ZXin
     /**
      * After a trip gets deleted, rider calls update, and transitions them to the
      * rating activty to rate their driver
-     *
-     * @param observable
-     * @param o
      */
     @Override
     public void update(Observable observable, Object o) {
         Trip sessionTrip = App.getModel().getSessionTrip();
         User.TYPE currentUserType = App.getModel().getSessionUser().getType();
 
-        if(currentUserType == User.TYPE.RIDER){
-            if(sessionTrip == null){
+        if (currentUserType == User.TYPE.RIDER) {
+            if (sessionTrip == null) {
                 Intent intent = new Intent(this, RatingActivity.class);// New activity
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.putExtra("driverID",driverID);
+                intent.putExtra("driverID", driverID);
                 startActivity(intent);
                 finish();
                 //this.finish();
@@ -176,7 +163,9 @@ public class PaymentActivity extends AppCompatActivity implements Observer, ZXin
         }
     }
 
-    /** onDestroy method destructs activity if it is closed down **/
+    /**
+     * onDestroy method destructs activity if it is closed down
+     **/
     @Override
     public void onDestroy() {
         super.onDestroy();

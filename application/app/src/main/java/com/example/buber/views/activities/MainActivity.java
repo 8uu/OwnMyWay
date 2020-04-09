@@ -17,7 +17,6 @@ import java.util.Observer;
 /**
  * MainActivity. Used mostly as a router to check the current users login state and redirect
  * to either the Login or Main map activity (in case the user is already logged in)
- * TODO: MVC Updating and Error Handling.
  */
 public class MainActivity extends AppCompatActivity implements Observer, UIErrorHandler {
 
@@ -41,9 +40,7 @@ public class MainActivity extends AppCompatActivity implements Observer, UIError
     }
 
     @Override
-    public void update(Observable o, Object arg) {
-        ApplicationModel m = (ApplicationModel) o;
-    }
+    public void update(Observable o, Object arg) {}
 
     /**determineLoginStatus is used to determine the login status of the user - it checks if the
      * user is logged in */
@@ -57,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements Observer, UIError
                     ApplicationController.loadSessionTrip(i, this);  // now determine trip status
                 }
                 else {
-                    Toast.makeText(this, err.getMessage(), Toast.LENGTH_LONG);
+                    Toast.makeText(this, err.getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
         } else {

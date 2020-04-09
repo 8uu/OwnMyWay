@@ -20,6 +20,7 @@ import com.example.buber.views.UIErrorHandler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -35,8 +36,6 @@ public class TripSearchActivity extends AppCompatActivity implements UIErrorHand
     ArrayAdapter<TripSearchRecord> tripSearchRecordArrayAdapter;
     ArrayList<TripSearchRecord> tripDataList;
     private boolean showAcceptedPendingRides;
-
-    private static final String TAG = "TripSearchActivity";
 
     /**onCreate method creates the view. It is used to populate TripSearchActivity
      * @param savedInstanceState calls the previous saved state if there is one*/
@@ -100,7 +99,7 @@ public class TripSearchActivity extends AppCompatActivity implements UIErrorHand
             }
 
             for (Trip t : tripList) {
-                tripDataList.add(new TripSearchRecord(t, sessionUser.getCurrentUserLocation()));
+                Objects.requireNonNull(tripDataList).add(new TripSearchRecord(t, sessionUser.getCurrentUserLocation()));
             }
 
             if (tripSearchRecordArrayAdapter != null) {
@@ -115,7 +114,7 @@ public class TripSearchActivity extends AppCompatActivity implements UIErrorHand
             }
 
             for (Trip t : driverAcceptedPendingRides) {
-                tripDataList.add(new TripSearchRecord(t, sessionUser.getCurrentUserLocation()));
+                Objects.requireNonNull(tripDataList).add(new TripSearchRecord(t, sessionUser.getCurrentUserLocation()));
             }
 
             if (tripSearchRecordArrayAdapter != null) {

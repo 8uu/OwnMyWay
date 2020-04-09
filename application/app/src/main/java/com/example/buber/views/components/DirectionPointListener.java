@@ -7,5 +7,5 @@ import com.google.android.gms.maps.model.PolylineOptions;
 public interface DirectionPointListener {
     /**onPath() is the onPathMethod
      * @param polyLine is a PolylineOptions object*/
-    public void onPath(PolylineOptions polyLine);
+    void onPath(PolylineOptions polyLine);
 }

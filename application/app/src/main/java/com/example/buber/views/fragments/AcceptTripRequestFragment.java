@@ -17,6 +17,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.buber.App;
 import com.example.buber.R;
+import com.example.buber.controllers.ApplicationController;
 import com.example.buber.views.activities.ContactViewerActivity;
 import com.example.buber.views.activities.TripSearchActivity;
 import com.example.buber.views.components.GetPathFromLocation;
@@ -29,6 +30,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Fragment used to accept a trip. Generates a modal that shows trip details and allows a user to
@@ -37,18 +39,10 @@ import java.util.List;
 public class AcceptTripRequestFragment extends DialogFragment {
     private String apiKey;
 
-    private TextView estimatedCost;
-    private TextView startAdd;
-    private TextView endAdd;
-    private TextView rider;
-    private TextView driverDistance;
-    private Button viewContactButton;
     private TripSearchActivity parentActivity;
-
     private OnFragmentInteractionListener listener;
     private TripSearchRecord tripSearchRecord;
     private int position;
-    private List<LatLng> routePointList;
 
     private boolean showAcceptedPendingRides;
 
@@ -97,15 +91,14 @@ public class AcceptTripRequestFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        //return super.onCreateDialog(savedInstanceState);
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.accept_trip_request_fragment, null);
+        View view = View.inflate(getActivity(), R.layout.accept_trip_request_fragment, null);
 
-        estimatedCost = view.findViewById(R.id.fragment_estimated_cost);
-        startAdd = view.findViewById(R.id.fragment_startAdd);
-        endAdd = view.findViewById(R.id.fragment_endAdd);
-        rider = view.findViewById(R.id.fragment_riderName);
-        driverDistance = view.findViewById(R.id.fragment_distance);
-        viewContactButton = view.findViewById(R.id.viewContactButton);
+        TextView estimatedCost = view.findViewById(R.id.fragment_estimated_cost);
+        TextView startAdd = view.findViewById(R.id.fragment_startAdd);
+        TextView endAdd = view.findViewById(R.id.fragment_endAdd);
+        TextView rider = view.findViewById(R.id.fragment_riderName);
+        TextView driverDistance = view.findViewById(R.id.fragment_distance);
+        Button viewContactButton = view.findViewById(R.id.viewContactButton);
 
         //If the trip search record exists add information to the fragment
         if (tripSearchRecord != null) {
@@ -114,13 +107,11 @@ public class AcceptTripRequestFragment extends DialogFragment {
             endAdd.setText(tripSearchRecord.getEndAddress());
             rider.setText(tripSearchRecord.getRiderName());
             driverDistance.setText(tripSearchRecord.getDistanceFromDriver());
-            viewContactButton.setOnClickListener(v -> {
-                handleViewRiderContact(tripSearchRecord.getRiderID());
-            });
+            viewContactButton.setOnClickListener(v -> handleViewRiderContact(tripSearchRecord.getRiderID()));
 
             //finds and initializes the mapView fragment
             MapView mapView = view.findViewById(R.id.lite_map);
-            MapsInitializer.initialize(getActivity());
+            MapsInitializer.initialize(Objects.requireNonNull(getActivity()));
             mapView.onCreate(savedInstanceState);
             mapView.onResume();
 
@@ -132,10 +123,8 @@ public class AcceptTripRequestFragment extends DialogFragment {
                         origin,
                         destination,
                         apiKey,
-                        polyLine -> {
-                            routePointList = polyLine.getPoints();
-                            googleMap.addPolyline(polyLine);
-                        }).execute();
+                        googleMap::addPolyline
+                        ).execute();
                 googleMap.addMarker(new MarkerOptions().position(origin).title("start"));
                 googleMap.addMarker(new MarkerOptions().position(destination).title("end"));
                 LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
@@ -156,12 +145,8 @@ public class AcceptTripRequestFragment extends DialogFragment {
         } else {
             return builder.setView(view).setTitle("View Trip")
                     .setNegativeButton("Ignore", null)
-                    .setPositiveButton("Fair enough, offer ride", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            listener.onAcceptPressed(tripSearchRecord, position);
-                        }
-                    })
+                    .setPositiveButton("Fair enough, offer ride", (dialog, whichButton) ->
+                        listener.onAcceptPressed(tripSearchRecord, position))
                     .create();
         }
     }
@@ -171,9 +156,9 @@ public class AcceptTripRequestFragment extends DialogFragment {
      *
      * @param riderID is the riderID - it is used to pull the correct information
      */
-    public void handleViewRiderContact(String riderID) {
+    private void handleViewRiderContact(String riderID) {
         Intent contactIntent = new Intent(parentActivity, ContactViewerActivity.class);
-        App.getController().handleViewContactInformation(parentActivity, contactIntent, riderID, null);
+        ApplicationController.handleViewContactInformation(parentActivity, contactIntent, riderID, null);
     }
 
     /**
@@ -183,7 +168,7 @@ public class AcceptTripRequestFragment extends DialogFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        MapFragment f = (MapFragment) getActivity()
+        MapFragment f = (MapFragment) Objects.requireNonNull(getActivity())
                 .getFragmentManager()
                 .findFragmentById(R.id.lite_map);
         if (f != null)

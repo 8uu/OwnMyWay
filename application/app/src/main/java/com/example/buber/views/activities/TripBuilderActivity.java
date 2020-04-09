@@ -1,5 +1,6 @@
 package com.example.buber.views.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
@@ -61,6 +62,7 @@ public class TripBuilderActivity extends AppCompatActivity implements UIErrorHan
 
     /**onCreate method will create TripBuilderActivity when it is run
      * @param savedInstanceState will get a previous saved state if available*/
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +73,7 @@ public class TripBuilderActivity extends AppCompatActivity implements UIErrorHan
         // Set start location parameters from previous map activity
         double[] currentLatLong = getIntent().getDoubleArrayExtra("currentLatLong");
         GEOFENCE_DETECTION_TOLERANCE = getIntent().getDoubleExtra("GEOFENCE_DETECTION_TOLERANCE", 0.040);
+        assert currentLatLong != null;
         currentUserLoc = new UserLocation(currentLatLong[0], currentLatLong[1]);
         startLoc = new UserLocation(currentLatLong[0], currentLatLong[1]);
 
@@ -104,6 +107,7 @@ public class TripBuilderActivity extends AppCompatActivity implements UIErrorHan
     }
 
 
+    @SuppressLint("SetTextI18n")
     public void handleClearStartPtBtn(View v) {
         startLoc = new UserLocation(currentUserLoc.getLatitude(), currentUserLoc.getLongitude());
         startLoc.setAddress(currentUserLoc.getAddress());
@@ -115,6 +119,7 @@ public class TripBuilderActivity extends AppCompatActivity implements UIErrorHan
         startPointTextView.setText("Set to your location: \n" + currentUserLoc.getAddress());
     }
 
+    @SuppressLint("SetTextI18n")
     public void handleClearEndPtBtn(View v) {
         endLoc = null;
         tripSubmissionLayout.setVisibility(View.GONE);
@@ -146,7 +151,7 @@ public class TripBuilderActivity extends AppCompatActivity implements UIErrorHan
             Place place = PingPlacePicker.getPlace(data);
             if (place != null) {
                 final LatLng latLng = place.getLatLng();
-
+                assert latLng != null;
                 switch (choosingBtnID) {
                     case R.id.selectStartPointBtn:
                         startPointTextView.setText(place.getAddress());
@@ -184,6 +189,7 @@ public class TripBuilderActivity extends AppCompatActivity implements UIErrorHan
 
 
     /**Used to recalculate ride fare*/
+    @SuppressLint("SetTextI18n")
     private void recalculateFareOffering() {
         minimumFareOffering = startLoc.distancePriceEstimate(endLoc);
         riderFareOffering = minimumFareOffering;
@@ -202,7 +208,7 @@ public class TripBuilderActivity extends AppCompatActivity implements UIErrorHan
         }
 
         String username = App.getModel().getSessionUser().getUsername();
-        double offeredFare = Double.valueOf(fareOfferingEditText.getText().toString().trim());
+        double offeredFare = Double.parseDouble(fareOfferingEditText.getText().toString().trim());
         if (offeredFare >= minimumFareOffering) {
             riderFareOffering = offeredFare;
 

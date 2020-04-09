@@ -7,8 +7,7 @@ package com.example.buber.views;
 public interface UIErrorHandler {
     /**
      * When the event is complete overrider this
-     *
-     * @param err can take in an error
+     * @param e can take in an error
      */
     void onError(Error e);
 

@@ -33,13 +33,7 @@ public class EditAccountActivity extends AppCompatActivity implements Observer, 
     private EditText editLastName;
     private EditText editPhoneNumber;
 
-    private String oldUserName;
-    private String oldFirstName;
-    private String oldLastName;
-    private String oldPhoneNumber;
-
     private CircularProgressButton btnSave;
-
     private TextWatcher txtWatcher;
 
     /**onCreate method creates the EditAccountActivity when it is called
@@ -73,10 +67,10 @@ public class EditAccountActivity extends AppCompatActivity implements Observer, 
     public void fillData(){
         User curUser = App.getModel().getSessionUser();
 
-        oldUserName = curUser.getUsername();
-        oldFirstName = curUser.getAccount().getFirstName();
-        oldLastName = curUser.getAccount().getLastName();
-        oldPhoneNumber = curUser.getAccount().getPhoneNumber();
+        String oldUserName = curUser.getUsername();
+        String oldFirstName = curUser.getAccount().getFirstName();
+        String oldLastName = curUser.getAccount().getLastName();
+        String oldPhoneNumber = curUser.getAccount().getPhoneNumber();
 
         editUserName.setText(oldUserName);
         editFirstName.setText(oldFirstName);
@@ -113,11 +107,6 @@ public class EditAccountActivity extends AppCompatActivity implements Observer, 
         }
     }
 
-    /**Updates username, first name, last name, and phone number fields
-     * @param newUserName is the new username input
-     * @param newFirstName is the new first name input
-     * @param newLastName is the new last name input
-     * @param newPhoneNumber is the new phone number input*/
     /**Updates username, first name, last name, and phone number fields*/
     public void updateNonCriticalUserFields(String newUserName, String newFirstName,
                                             String newLastName,String newPhoneNumber){

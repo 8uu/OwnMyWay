@@ -18,8 +18,8 @@ import java.util.ArrayList;
  * UI Fragment for displaying a list of trip data.
  */
 public class CustomTripList extends ArrayAdapter<TripSearchRecord> {
-    public ArrayList<TripSearchRecord> tripRecords;
-    public Context context;
+    private ArrayList<TripSearchRecord> tripRecords;
+    private Context context;
 
     //constructor
     /**Constructor for the CustomTripList() class

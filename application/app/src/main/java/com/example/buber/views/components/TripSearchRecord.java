@@ -42,19 +42,7 @@ public class TripSearchRecord implements Serializable {
     public LatLng getStartLatLng(){return this.startLatLng;}
     public LatLng getEndLatLng(){return  this.endLatLng;}
 
-    public void setRiderName(String newRiderName){this.riderName = newRiderName;}
-    public void setStartAddress(String newStartLat){this.startAddress = newStartLat;}
-    public void setEndAddress(String newStartLong){this.endAddress = newStartLong;}
-    public void setEstimatedCost(String newEstimatedCost){this.estimatedCost = newEstimatedCost;}
-    public void setDistanceFromDriver(String newDistance){this.distanceFromDriver = newDistance;}
-    public void setStartLatLng(LatLng startLatLng){this.startLatLng = startLatLng;}
-    public void setEndLatLng(LatLng endLatLng){this.endLatLng = endLatLng;}
-
     public String getRiderID() {
         return riderID;
-    }
-
-    public void setRiderID(String riderID) {
-        this.riderID = riderID;
     }
 }
