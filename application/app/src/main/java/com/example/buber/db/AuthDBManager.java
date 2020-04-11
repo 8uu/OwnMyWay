@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * Used to handle the Firebase side authentication. Wraps the FirebaseAuth object and exposes
@@ -38,7 +39,7 @@ public class AuthDBManager {
                 .addOnSuccessListener((AuthResult authResult) -> {
                     FirebaseUser fbUser = authResult.getUser();
                     HashMap<String, String> toReturn = new HashMap<>();
-                    toReturn.put("doc-id", fbUser.getUid());
+                    toReturn.put("doc-id", Objects.requireNonNull(fbUser).getUid());
                     listener.onCompletion(toReturn, null);
                 })
                 .addOnFailureListener((@NonNull Exception e) -> {
@@ -66,18 +67,14 @@ public class AuthDBManager {
                 .addOnSuccessListener((AuthResult authResult) -> {
                     Log.d(TAG, "Firebase User Created ");
                     HashMap<String, String> toReturn = new HashMap<>();
-                    toReturn.put("doc-id", authResult.getUser().getUid());
+                    toReturn.put("doc-id", Objects.requireNonNull(authResult.getUser()).getUid());
                     listener.onCompletion(toReturn, null);
 
                 })
-                .addOnFailureListener((@NonNull Exception e) -> {
-                    listener.onCompletion(null, new Error(e.getMessage()));
-                });
+                .addOnFailureListener((@NonNull Exception e) -> listener.onCompletion(null, new Error(e.getMessage())));
     }
 
-    /**
-    *@Returns true if a user is currently logged in
-    */
+
     public boolean isLoggedIn() {
 
         return mAuth.getCurrentUser() != null;
@@ -103,7 +100,7 @@ public class AuthDBManager {
                     } else {
                         // Get the rider
                         App.getDbManager().getRider(uid, (resultData1, err1) -> {
-                            if (err != null) listener.onCompletion(null, err);
+                            if (err1 != null) listener.onCompletion(null, err1);
                             else {
                                 listener.onCompletion(resultData1, null);
                             }
@@ -115,9 +112,7 @@ public class AuthDBManager {
         }
     }
 
-    /**
-     * @returns the current users Firebase document id
-     */
+
     public String getCurrentUserID() {
 
         return mAuth.getUid();

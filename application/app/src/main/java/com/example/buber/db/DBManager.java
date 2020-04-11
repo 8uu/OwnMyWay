@@ -18,6 +18,7 @@ import com.google.firebase.firestore.SetOptions;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Repository for accessing firebase. Used to perform CRUD (Create, Read, Update Destroy) on
@@ -27,31 +28,14 @@ public class DBManager {
 
     private static final String TAG = "In Database Manager";
 
-    private FirebaseFirestore database;      // Database connection
-
     private CollectionReference collectionDriver, collectionRider, collectionTrip;
-
-    public FirebaseFirestore getDatabase() {
-        return database;
-    }
-
-    public CollectionReference getCollectionDriver() {
-        return collectionDriver;
-    }
-
-    public CollectionReference getCollectionRider() {
-        return collectionRider;
-    }
-
-    public CollectionReference getCollectionTrip() {
-        return collectionTrip;
-    }
 
     /**constructs DBManager*/
     public DBManager(String driverCollectionName,
                      String riderCollectionName,
                      String tripCollectionName) {
-        database = FirebaseFirestore.getInstance();
+        // Database connection
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
         collectionDriver = database.collection(driverCollectionName);
         collectionRider = database.collection(riderCollectionName);
         collectionTrip = database.collection(tripCollectionName);
@@ -74,7 +58,7 @@ public class DBManager {
                     listener.onCompletion(toReturn, null);
                 })
                 .addOnFailureListener((@NonNull Exception e) -> {
-                    Log.d(TAG, e.getMessage());
+                    Log.d(TAG, Objects.requireNonNull(e.getMessage()));
                     listener.onCompletion(null, new Error("Login failed. Please try again," +
                             "if the issue persists, close and restart the app."));
                 });
@@ -94,7 +78,7 @@ public class DBManager {
                     toReturn.put("user", driver);
                     listener.onCompletion(toReturn, null);
                 }).addOnFailureListener((@NonNull Exception e) -> {
-            Log.d(TAG, e.getMessage());
+            Log.d(TAG, Objects.requireNonNull(e.getMessage()));
             listener.onCompletion(null, new Error("Login failed. Please try again," +
                     "if the issue persists, close and restart the app."));
         });
@@ -119,14 +103,12 @@ public class DBManager {
                         ListenerRegistration lr =
                         collectionTrip
                                 .document(tripRequest.getRiderID())
-                                .addSnapshotListener((documentSnapshot, e) -> {
-                                    App.getModel().handleTripStatusChanges(tripRequest.getRiderID(), documentSnapshot);
-                                });
+                                .addSnapshotListener((documentSnapshot, e) -> App.getModel().handleTripStatusChanges(tripRequest.getRiderID(), documentSnapshot));
                        App.getModel().setTripListener(lr);
                     }
                 })
                 .addOnFailureListener((@NonNull Exception e) -> {
-                    Log.d(TAG, e.getMessage());
+                    Log.d(TAG, Objects.requireNonNull(e.getMessage()));
                     listener.onCompletion(null, new Error("Could not submit trip request."));
                 });
     }
@@ -148,12 +130,12 @@ public class DBManager {
                 toReturn.put("user", documentSnapshot.toObject(Rider.class));
                 listener.onCompletion(toReturn,null);
             }).addOnFailureListener((@NonNull Exception e) -> {
-                Log.d(TAG, e.getMessage());
+                Log.d(TAG, Objects.requireNonNull(e.getMessage()));
                 listener.onCompletion(null, new Error("Login failed. Please try again," +
                         "if the issue persists, close and restart the app."));
             });
         } catch (Exception e) {
-            Log.d(TAG, e.getMessage());
+            Log.d(TAG, Objects.requireNonNull(e.getMessage()));
         }
 
     }
@@ -174,7 +156,7 @@ public class DBManager {
                     listener.onCompletion(toReturn, null);
                     })
                 .addOnFailureListener((@NonNull Exception e) -> {
-                    Log.d(TAG, e.getMessage());
+                    Log.d(TAG, Objects.requireNonNull(e.getMessage()));
                     listener.onCompletion(null, new Error("Login failed. Please try again," +
                             "if the issue persists, close and restart the app."));
                 });
@@ -204,7 +186,7 @@ public class DBManager {
 
             listener.onCompletion(toReturn, null);
         }).addOnFailureListener((@NonNull Exception e) -> {
-            Log.d(TAG, e.getMessage());
+            Log.d(TAG, Objects.requireNonNull(e.getMessage()));
             listener.onCompletion(null, new Error("Login failed. Please try again," +
                     "if the issue persists, close and restart the app."));
         });
@@ -238,9 +220,7 @@ public class DBManager {
                 });
 
             listener.onCompletion(toReturn, null);
-        }).addOnFailureListener(e -> {
-            listener.onCompletion(null, new Error(e.getMessage()));
-        });
+        }).addOnFailureListener(e -> listener.onCompletion(null, new Error(e.getMessage())));
     }
 
     /* UPDATE */
@@ -255,11 +235,9 @@ public class DBManager {
         Log.d("DBMANAGER","Updating Rider");
         collectionRider.document(docID)
                 .set(updatedRider, SetOptions.merge())
-                .addOnSuccessListener(documentSnapshot -> {
-                    listener.onCompletion(null, null);
-                })
+                .addOnSuccessListener(documentSnapshot -> listener.onCompletion(null, null))
                 .addOnFailureListener((@NonNull Exception e) -> {
-                    Log.d(TAG, e.getMessage());
+                    Log.d(TAG, Objects.requireNonNull(e.getMessage()));
                     Error err = new Error("Failed to update rider");
                     listener.onCompletion(null, err);
                 });
@@ -274,11 +252,9 @@ public class DBManager {
     public void updateDriver(String docID, Driver updatedDriver, EventCompletionListener listener) {
         collectionDriver.document(docID)
                 .set(updatedDriver, SetOptions.merge())
-                .addOnSuccessListener(documentSnapshot -> {
-                    listener.onCompletion(null, null);
-                })
+                .addOnSuccessListener(documentSnapshot -> listener.onCompletion(null, null))
                 .addOnFailureListener((@NonNull Exception e) -> {
-                    Log.d(TAG, e.getMessage());
+                    Log.d(TAG, Objects.requireNonNull(e.getMessage()));
                     Error err = new Error("Failed to update driver");
                     listener.onCompletion(null, err);
                 });
@@ -307,7 +283,7 @@ public class DBManager {
                     listener.onCompletion(null, null);
                 })
                 .addOnFailureListener((@NonNull Exception e) -> {
-                    Log.d(TAG, e.getMessage());
+                    Log.d(TAG, Objects.requireNonNull(e.getMessage()));
                     Error err = new Error("Failed to update trip");
                     listener.onCompletion(null, err);
                 });
@@ -323,11 +299,9 @@ public class DBManager {
     public void deleteRider(String docID, EventCompletionListener listener) {
         collectionRider.document(docID)
                 .delete()
-                .addOnSuccessListener(aVoid -> {
-                    listener.onCompletion(null, null);
-                })
+                .addOnSuccessListener(aVoid -> listener.onCompletion(null, null))
                 .addOnFailureListener((@NonNull Exception e) -> {
-                    Log.d(TAG, e.getMessage());
+                    Log.d(TAG, Objects.requireNonNull(e.getMessage()));
                     Error err = new Error("Failed to update trip");
                     listener.onCompletion(null, err);
                 });
@@ -341,11 +315,9 @@ public class DBManager {
     public void deleteDriver(String docID, EventCompletionListener listener) {
         collectionDriver.document(docID)
                 .delete()
-                .addOnSuccessListener(aVoid -> {
-                    listener.onCompletion(null, null);
-                })
+                .addOnSuccessListener(aVoid -> listener.onCompletion(null, null))
                 .addOnFailureListener((@NonNull Exception e) -> {
-                    Log.d(TAG, e.getMessage());
+                    Log.d(TAG, Objects.requireNonNull(e.getMessage()));
                     Error err = new Error("Failed to update trip");
                     listener.onCompletion(null, err);
                 });
@@ -359,11 +331,9 @@ public class DBManager {
     public void deleteTrip(String docID, EventCompletionListener listener) {
         collectionTrip.document(docID)
                 .delete()
-                .addOnSuccessListener(aVoid -> {
-                    listener.onCompletion(null, null);
-                })
+                .addOnSuccessListener(aVoid -> listener.onCompletion(null, null))
                 .addOnFailureListener((@NonNull Exception e) -> {
-                    Log.d(TAG, e.getMessage());
+                    Log.d(TAG, Objects.requireNonNull(e.getMessage()));
                     Error err = new Error("Failed to delete trip");
                     listener.onCompletion(null, err);
                 });

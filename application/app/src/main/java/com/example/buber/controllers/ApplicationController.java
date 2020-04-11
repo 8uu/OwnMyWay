@@ -19,6 +19,7 @@ import com.example.buber.views.activities.RatingActivity;
 import com.example.buber.views.UIErrorHandler;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Observer;
 
 import br.com.simplepass.loadingbutton.customViews.CircularProgressButton;
@@ -50,7 +51,6 @@ public class ApplicationController {
                               String lastName,
                               String email,
                               String phoneNumber,
-                              User.TYPE type,
                               UIErrorHandler view) {
         ApplicationService.createNewUser(
                 username,
@@ -59,7 +59,6 @@ public class ApplicationController {
                 lastName,
                 email,
                 phoneNumber,
-                type,
                 (resultData, err) -> {
                     if (err != null) view.onError(err);
                     else {
@@ -84,7 +83,7 @@ public class ApplicationController {
                 User u = (User) resultData.get("user");
                 manageLoggedStateAcrossTwoUserCollections(true, u, type, view);
                 Toast.makeText(view.getApplicationContext(), "You are NOW logged in.", Toast.LENGTH_SHORT).show();
-                u.setType(type);
+                Objects.requireNonNull(u).setType(type);
                 model.setSessionUser(u);
                 ApplicationController.loadSessionTrip(intent, view);
             }
@@ -307,24 +306,21 @@ public class ApplicationController {
                     if (err == null) {
                         App.getModel().setSessionUser(updatedSessionUser);
                         view.finish();
-                    } else {
-                        // TODO: Handle Errors
-                    }
+                    }  // TODO: Handle Errors
+
                 }));
     }
 
     /**Used to update non critical user fields (ie. username, first/last name, phone number) when
      * they are edited by user. This controller method should be called from editAccount
      * @param updatedSessionUser is the new updated user object
-     * @param view is the the UIErrorHandler
-     * */
-    public static void editAccountUpdate(User updatedSessionUser, User.TYPE userType, UIErrorHandler view){
+     */
+    public static void editAccountUpdate(User updatedSessionUser, User.TYPE userType){
             ApplicationService.updateUser(updatedSessionUser, userType, ((resultData, err) -> {
                 if (err == null) {
                     App.getModel().setSessionUser(updatedSessionUser);
-                } else {
-                    // TODO: Handle Errors
-                }
+                }  // TODO: Handle Errors
+
             }));
 
     }
@@ -341,10 +337,10 @@ public class ApplicationController {
             if (err == null) {
                 Driver tmpDriver = (Driver) resultData.get("user");
                 if(giveThumbsUp){
-                    tmpDriver.setNumThumbsUp(tmpDriver.getNumThumbsUp() + 1);
+                    Objects.requireNonNull(tmpDriver).setNumThumbsUp(tmpDriver.getNumThumbsUp() + 1);
                 }
                 else{
-                    tmpDriver.setNumThumbsDown(tmpDriver.getNumThumbsDown()+1);
+                    Objects.requireNonNull(tmpDriver).setNumThumbsDown(tmpDriver.getNumThumbsDown()+1);
                 }
                 //Rating algorithm
                 tmpDriver.setRating((tmpDriver.getNumThumbsUp() / (tmpDriver.getNumThumbsDown() +
@@ -364,7 +360,7 @@ public class ApplicationController {
             App.getDbManager().getDriver(driverID, ((resultData, err) -> {
                 if (err == null) {
                     Driver d = (Driver) resultData.get("user");
-                    contactIntent.putExtra("ID", d.getDocID());
+                    contactIntent.putExtra("ID", Objects.requireNonNull(d).getDocID());
                     contactIntent.putExtra("username", d.getUsername());
                     contactIntent.putExtra("email", d.getAccount().getEmail());
                     contactIntent.putExtra("phoneNumber", d.getAccount().getPhoneNumber());
@@ -376,7 +372,7 @@ public class ApplicationController {
             App.getDbManager().getRider(riderID, ((resultData, err) -> {
                 if (err == null) {
                     Rider r = (Rider) resultData.get("user");
-                    contactIntent.putExtra("ID", r.getDocID());
+                    contactIntent.putExtra("ID", Objects.requireNonNull(r).getDocID());
                     contactIntent.putExtra("username", r.getUsername());
                     contactIntent.putExtra("email", r.getAccount().getEmail());
                     contactIntent.putExtra("phoneNumber", r.getAccount().getPhoneNumber());

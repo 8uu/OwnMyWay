@@ -20,7 +20,6 @@ public class ApplicationModel extends Observable {
     private List<Trip> sessionTripList;
     private List<Trip> driverAcceptedPendingRides;
     private List<Observer> obs = new ArrayList<>();
-    private Double mapBounds[];
     private ListenerRegistration tripListener;
 
 
@@ -146,7 +145,7 @@ public class ApplicationModel extends Observable {
     /**
      * Removing the Trip listener
      */
-    public void detachTripListener() {
+    private void detachTripListener() {
         ListenerRegistration lr = this.getTripListener();
         if (lr != null) {
             lr.remove();
@@ -194,7 +193,7 @@ public class ApplicationModel extends Observable {
                     // Trip is null, so a user has just cancelled. So need to remove from local trip queue.
                     tripIds.remove(riderID);
 
-                    if (tripIds != null && tripIds.size() > 0) {
+                    if (tripIds.size() > 0) {
                         String nxtTripID = tripIds.get(0);
                         App.getDbManager().getTrip(nxtTripID, (resultData, err) -> {
                             if (resultData != null) {

@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.buber.App;
 import com.example.buber.model.ApplicationModel;
-import com.example.buber.model.User;
 import com.example.buber.R;
 import com.example.buber.views.formUtilities.CreateAccountFormUtils;
 import com.example.buber.views.UIErrorHandler;
@@ -75,8 +74,6 @@ public class CreateAccountActivity extends AppCompatActivity implements View.OnC
             String lastName = editlastName.getText().toString().trim();
             String email = editEmail.getText().toString().trim();
             String phoneNumber = editphoneNumber.getText().toString().trim();
-            // TODO: MAKE NOT CONSTANT  *UI Team*
-            User.TYPE type = User.TYPE.RIDER;
 
             btnCreate.startAnimation();
             App.getController().createNewUser(
@@ -86,7 +83,6 @@ public class CreateAccountActivity extends AppCompatActivity implements View.OnC
                             lastName,
                             email,
                             phoneNumber,
-                            type,
                             this);
             }
     }
