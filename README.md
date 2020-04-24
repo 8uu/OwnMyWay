@@ -1,7 +1,10 @@
 # BUber   
- A more accessible and efficient solution to the existing cab system.
- 
-Usage instructions in our **video demo [here](https://photos.app.goo.gl/gK63vDJ72ShFJrn9A).**
+#### A more accessible and efficient solution to the existing taxi/cab system.
+
+One minute demo of rider pickup and drop-off (Driver left, Rider right):
+![ezgif-1-1157c34fe0f7](https://user-images.githubusercontent.com/32045517/77482030-9b176d00-6dea-11ea-9dd8-833a702e3b65.gif)
+
+The full usage instructions is in our **video demo [here](https://photos.app.goo.gl/gK63vDJ72ShFJrn9A).**
 
 ## FAQs:
 1. Do you accept other forms of payment (e.g., PayPal, Debit, VISA, etc.)
