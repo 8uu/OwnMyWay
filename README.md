@@ -1,4 +1,4 @@
-# RideShare   
+# OwnMyWay   
 #### A more accessible and efficient solution to the existing taxi/cab system.
 
 One minute demo of rider pickup and drop-off (Driver left, Rider right):

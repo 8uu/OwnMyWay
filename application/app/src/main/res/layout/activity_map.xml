@@ -136,10 +136,12 @@
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="BUber"
+            android:layout_marginTop="16dp"
+            android:text="OwnMyWay"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textSize="30sp"
+            android:textSize="23sp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.51"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

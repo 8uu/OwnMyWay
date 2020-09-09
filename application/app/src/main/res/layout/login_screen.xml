@@ -9,13 +9,13 @@
 
     <TextView
         android:id="@+id/loginLogoTextView"
-        android:layout_width="299dp"
-        android:layout_height="128dp"
+        android:layout_width="344dp"
+        android:layout_height="123dp"
         android:layout_marginTop="52dp"
         android:gravity="center"
-        android:text="BUber"
+        android:text="OwnMyWay"
         android:textColor="#FFFFFF"
-        android:textSize="100dp"
+        android:textSize="66dp"
         app:layout_constraintBottom_toBottomOf="@+id/loginHeaderText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

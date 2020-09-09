@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:914813536355:android:d1497d54e7646d009b1056",
+        "mobilesdk_app_id": "1:914813536355:android:eaeafdbee08396649b1056",
         "android_client_info": {
-          "package_name": "com.example.buber"
+          "package_name": "com.ownmyway"
         }
       },
       "oauth_client": [
@@ -21,7 +21,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDE-fVJg6b8Cvp-eTYklZtjIi5HXE3-FDY"
+          "current_key": "AIzaSyASg50wR9NQvCRaOseFZoUfHW5HHJHKcPw"
         }
       ],
       "services": {
