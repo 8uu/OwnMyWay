@@ -1,4 +1,4 @@
-# OwnMyWay   
+# OwnMyWay 
 #### A more accessible and efficient solution to the existing taxi/cab system.
 
 One minute demo of rider pickup and drop-off (Driver left, Rider right):
@@ -13,7 +13,7 @@ The full usage instructions is in our **video demo [here](https://photos.app.goo
     
 2. Do you have an iOS version?
 
-    _No, but we are continuing to expand our platforms._
+    _No, but we are continuing to expand support._
     
 3. Are you really better than Uber?
 
