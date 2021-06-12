@@ -1,5 +1,11 @@
 package com.ownmyway.views.activities;
 
+import static com.ownmyway.model.Trip.STATUS.DRIVER_PICKING_UP;
+import static com.ownmyway.model.Trip.STATUS.EN_ROUTE;
+import static com.ownmyway.model.User.TYPE.DRIVER;
+import static com.ownmyway.model.User.TYPE.RIDER;
+
+import android.Manifest;
 import android.app.Dialog;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -15,17 +21,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.ownmyway.App;
-import com.ownmyway.controllers.ApplicationController;
-import com.ownmyway.model.ApplicationModel;
-import com.ownmyway.model.Trip;
-import com.ownmyway.model.User;
-import com.ownmyway.model.UserLocation;
-import com.ownmyway.R;
-import com.ownmyway.views.components.MapUIAddOnsManager;
-import com.ownmyway.views.components.NotificationManager;
-import com.ownmyway.views.components.GetPathFromLocation;
-import com.ownmyway.views.UIErrorHandler;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -38,15 +33,21 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
+import com.ownmyway.App;
+import com.ownmyway.R;
+import com.ownmyway.controllers.ApplicationController;
+import com.ownmyway.model.ApplicationModel;
+import com.ownmyway.model.Trip;
+import com.ownmyway.model.User;
+import com.ownmyway.model.UserLocation;
+import com.ownmyway.views.UIErrorHandler;
+import com.ownmyway.views.components.GetPathFromLocation;
+import com.ownmyway.views.components.MapUIAddOnsManager;
+import com.ownmyway.views.components.NotificationManager;
 
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-
-import static com.ownmyway.model.Trip.STATUS.DRIVER_PICKING_UP;
-import static com.ownmyway.model.Trip.STATUS.EN_ROUTE;
-import static com.ownmyway.model.User.TYPE.DRIVER;
-import static com.ownmyway.model.User.TYPE.RIDER;
 
 /**
  * Main Map activity. Activity uses similiar UI for Rider and Driver, but changes functionality based
@@ -127,7 +128,7 @@ public class MapActivity extends AppCompatActivity implements Observer, OnMapRea
                     case DRIVER_ACCEPT:
                         if (currentUserType == DRIVER) {
                             notifManager.notifyOnDriverChannel(
-                                    1,"Unfortunately, a rider has declined your offer.",
+                                    1, "Unfortunately, a rider has declined your offer.",
                                     "", Color.RED);
                         }
                         break;
@@ -156,7 +157,7 @@ public class MapActivity extends AppCompatActivity implements Observer, OnMapRea
                 case DRIVER_ACCEPT:
                     if (currentUserType == RIDER) {
                         notifManager.notifyOnRiderChannel(
-                                4,"A driver has accepted your request!",
+                                4, "A driver has accepted your request!",
                                 "OwnMyWay requires your action!",
                                 Color.GREEN);
                     }
@@ -185,7 +186,7 @@ public class MapActivity extends AppCompatActivity implements Observer, OnMapRea
                     }
                     break;
                 case EN_ROUTE:
-                    getDeviceLocation(false,true);
+                    getDeviceLocation(false, true);
                     break;
                 case COMPLETED:
                     notifManager.notifyOnAllChannels(
@@ -245,7 +246,27 @@ public class MapActivity extends AppCompatActivity implements Observer, OnMapRea
         mMap = googleMap;
         if (mLocationPermissionGranted) {
             getDeviceLocation(true, true);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+                return;
             mMap.setMyLocationEnabled(true);
+
         }
 
         mMap.setOnMapClickListener(latLng -> {
@@ -333,9 +354,7 @@ public class MapActivity extends AppCompatActivity implements Observer, OnMapRea
                         mLastKnownUserLocation = (Location) task.getResult();
 
                         if (updateFirebase) {
-                            App.getController().updateUserLocation(new UserLocation(
-                                                    mLastKnownUserLocation.getLatitude(),
-                                                    mLastKnownUserLocation.getLongitude()));
+                            App.getController().updateUserLocation(new UserLocation(mLastKnownUserLocation.getLatitude(), mLastKnownUserLocation.getLongitude()));
                         }
 
                         Trip sessionTrip = App.getModel().getSessionTrip();

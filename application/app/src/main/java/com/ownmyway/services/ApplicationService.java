@@ -11,6 +11,7 @@ import com.ownmyway.model.Trip;
 import com.ownmyway.model.User;
 import com.ownmyway.model.UserLocation;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -109,9 +110,10 @@ public class ApplicationService {
                 controllerListener.onCompletion(null, err);
             } else {
                 List<Trip> filterTrips = new LinkedList<>();
-                List<Trip> tripData = (List<Trip>) resultData.get("all-trips");
+                List<Trip> tripData;
+                tripData = Collections.unmodifiableList((List<Trip>) Objects.requireNonNull(resultData.get("all-trips")));
                 String currentUid = App.getAuthDBManager().getCurrentUserID();
-                if (tripData != null && tripData.size() > 0) {
+                if (tripData.size() > 0) {
                     for (Trip t : tripData) {
                         double distance = driverLocation.distanceTo(t.getStartUserLocation());
                         if (
@@ -123,7 +125,7 @@ public class ApplicationService {
                         }
                     }
 
-                    HashMap<String, List> filteredTripsData = new HashMap<>();
+                    HashMap<String, List<Trip>> filteredTripsData = new HashMap<>();
                     filteredTripsData.put("filtered-trips", filterTrips);
                     controllerListener.onCompletion(filteredTripsData, null);
 
@@ -147,9 +149,9 @@ public class ApplicationService {
                 controllerListener.onCompletion(null, err);
             } else {
                 List<Trip> filterTrips = new LinkedList<>();
-                List<Trip> tripData = (List<Trip>) resultData.get("all-trips");
+                List<Trip> tripData = Collections.unmodifiableList((List<Trip>) Objects.requireNonNull(resultData.get("all-trips")));
                 String currentUid = App.getAuthDBManager().getCurrentUserID();
-                if (tripData != null && tripData.size() > 0) {
+                if (tripData.size() > 0) {
                     // First, get only DRIVER_ACCEPTs
                     for (Trip t : tripData) {
                         if (
@@ -168,6 +170,7 @@ public class ApplicationService {
                             v -> driverSessionUser.getAcceptedTripIds().indexOf(v.getRiderID())
                     ));
 
+                    //noinspection rawtypes
                     HashMap<String, List> filteredTripsData = new HashMap<>();
                     filteredTripsData.put("filtered-trips", filterTrips);
                     controllerListener.onCompletion(filteredTripsData, null);
